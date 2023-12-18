@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'css/base.css'%}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/fontawesome.css'%}">
+	<title>Earn gift</title>
+	<style type="text/css">
+		body{
+		    /*background: url("{% static 'img/coins.png'%}");*/
+            background-position: center;
+            background-repeat: repeat;
+            /*animation: bg-scroll 0.5s infinite;*/
+		}
+
+        @keyframes bg-scroll{
+            0%{
+                transform: translateY(0px);
+            }
+            100%{
+                transform: translateY(-100px);
+            }
+        }
+		.wheelcard{
+			box-shadow: 1px 10px 20px #484a4c;
+            /*background: repeating-linear-gradient(#ff5a6a, #4d4747 56px);*/
+            background: url(https://img.freepik.com/premium-vector/gift-pattern-seamless-texture-with-hand-drawn-illustrations-present-boxes-gifts-red-background_511660-456.jpg);
+            height: -webkit-fill-available;
+            border: 7px solid #f8c669;
+            border-radius: 15px;
+            animation:box-glow .8s infinite;
+		}
+
+        @keyframes box-glow{
+            0%{
+                border: 7px solid #f8c669;
+                
+            }
+            25%{
+                border: 7px solid #fff;
+                           }
+            50%{
+                border: 7px solid #f8c669;
+                
+            }
+            75%{
+                border: 7px solid #fff;
+                           }
+            100%{
+                border: 7px solid #f8c669;
+                
+            }
+
+        }
+        .result{
+            color: #f6a413;
+            font-size: xxx-large;
+            text-shadow: 2px 0px #e5d5d5;
+            
+        }
+
+        #exampleModalLongTitle{
+            color: #f6a413;
+            font-size: xxx-large;
+            text-shadow: 2px 0px #e5d5d5;
+        }
+        .active{
+            color: #f6a413;
+            font-size: xxx-large;
+            text-shadow: 2px 0px #e5d5d5;
+            animation: text-bigger 1s ease-out;
+            transition: all 5s;
+
+        }
+        .modal-dialog{
+            max-width:65%;
+            max-height: auto;
+        }
+        .modal-content{
+            outline: 14px dotted #fdf18f;
+           /* background: #1b1a1acf;*/
+            animation: winner-box .5s ease-out infinite;
+        }
+
+        @keyframes winner-box{
+            to{
+                outline: 14px dotted #fcd249;
+                box-shadow: 0px 5px 100px #fcd249;
+            }
+            from{
+                outline: 14px dotted #fff;
+                box-shadow: 0px 5px 0px #fcd249;
+
+            }
+        }
+
+        @keyframes text-bigger{
+            0%{
+                font-size: xxxx-large;
+            }
+            25%{
+                font-size: small;
+            }
+            50%{
+                font-size: x-large;
+            }
+            75%{
+                font-size: xx-large;
+            }
+            100%{
+                font-size: xxx-large;
+            }
+        }
+
+text{
+        font-family:Helvetica, Arial, sans-serif;
+        font-size:14px;
+        pointer-events:none;
+    	font-weight: 700;
+    }
+    #chart{
+        position:relative;
+        width:100%;
+        height:auto;
+        top:0;
+        left:0;
+    }
+    #question{
+        position: relative;
+        width:400px;
+        height:500px;
+        top:0;
+        left:520px;
+    }
+    svg{
+        background: #270c0d;
+        border-radius: 50%;
+        border: 8px solid #efe594;
+        margin-bottom: 10%;
+        outline: 22px dotted #fff;
+        animation: light-glow .6s infinite;
+
+    }
+
+    @keyframes light-glow{
+        0%{
+            outline: 20px dotted #ece9e2;
+            box-shadow: 0px 0px 0px #ece9e2; 
+        }
+        25%{
+             outline: 20px dotted #ecd06c;
+            box-shadow: 0px 0px 150px #ecd06c; 
+        }
+        50%{
+             outline: 20px dotted #e5ae4a;
+            box-shadow: 0px 0px 0px #e5ae4a; 
+        }
+        75%{
+            outline: 20px dotted #ece9e2;
+            box-shadow: 0px 0px 150px #ece9e2;
+        }
+        100%{
+             outline: 20px dotted #ecd06c;
+             box-shadow: 0px 0px 0px #ecd06c;
+
+        }
+    }
+
+    circle{
+        stroke: #ecd06c;
+        animation: spin-border-glow .5s infinite;
+    }
+
+    @keyframes spin-border-glow{
+        to{
+            stroke: #ecd06c;
+        }
+        from{
+            stroke: #ece9e2;
+        }
+    }
+
+    .modal-content{
+        -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            -0-box-shadow: none;
+        box-shadow: none;
+    }
+
+
+
+ 
+
+		</style>
+	</head>
+
+	<body>
+		<div class="container d-flex" style="height: 100vh;justify-content: center;padding: 5%;">
+          
+           <div class="modal" id="winnerresult" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-backdrop="false">
+              <div class="modal-dialog modal-dialog-centered" role="document" style="margin:1% auto;">
+                <div class="modal-content">
+                  <div class="modal-header" style="justify-content: center; border: none;">
+                    <h5 class="modal-title" id="exampleModalLongTitle">You Win</h5>
+                  </div>
+                  <div class="modal-body">
+                     {% if set_prize == 1 %}
+                    <div class="row d-flex" style="justify-content:center;text-align: center;">
+                        <img src="{% static 'img/amazon-voucher.png'%}" style="width: 410px;height: 412px;"> 
+                         <strong class="result" id="result"></strong>
+                    </div>
+                    {% elif set_prize == 2 %}
+                    <div class="row d-flex" style="justify-content:center;text-align: center;">
+                        <img src="{% static 'img/tupperware.png'%}" style="width: 410px;height: 412px;">
+                         <strong class="result" id="result"></strong> 
+                    </div>
+                    {% elif set_prize == 3 %}
+
+                    <div class="row d-flex" style="justify-content:center;text-align: center;">
+                        <img src="{% static 'img/flask.png'%}" style="width: 410px;height: 412px;">
+                         <strong class="result" id="result"></strong> 
+                    </div>
+                    {% else %}
+                    <div class="row d-flex" style="justify-content:center;text-align: center;">
+                        <img src="{% static 'img/umbrella.png'%}" style="width: 410px;height: 412px;"> 
+                         <strong class="result" id="result"></strong>
+                    </div>
+                    {% endif %}
+                  </div>
+                  <div class="modal-footer" style="justify-content: center; border: none;">
+                    <button type="button" id="refreshpage" class="btn btn-secondary" data-dismiss="modal" style="background: #dc3545;border: none;font-weight: 600;">Go Back</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+			<div class="row" style="justify-content: center;width: 100%;">
+				<input type="hidden" value="{{set_prize}}" id="pv">
+                <input type="hidden" value="{{value}}" id="qtyval">
+                <div class="card wheelcard">
+
+					<div class="card-body" style="padding: 2%;margin: auto;">
+						<!-- <h5>Spinning the wheel and win the prices</h5> -->
+						    <div class="row d-flex" style="text-align: center;margin-bottom: 3%;">
+                                <h3 style="font-weight: bolder;font-size: xxx-large;color: #f0bb63;filter: drop-shadow(2px 4px 6px black);">Fortune wheel</h3>
+                                <p style="color: #fff;font-size: larger;font-weight: 700;">Spinning the wheel the get the prize.</p>                  
+                            </div>  
+							<div class="row d-flex">
+								<img src="{% static 'img/girl.png' %}" style="position: absolute;width: 275px;left: 10%;transform: rotateY(179deg);filter: drop-shadow(2px 4px 6px black);">
+                                <img src="{% static 'img/girl.png' %}" style="position: absolute;width: 275px;left: 66%;filter: drop-shadow(2px 4px 6px black);">
+								<div id="chart" style="justify-content: center;display: flex;"></div>
+							</div>
+							<!-- <div class="row d-flex text-center">
+                                <strong class="result" id="result"></strong>
+							</div> -->
+					</div>
+				</div>
+
+                <!-- <div class="card winning_card">
+                     <div class="d-flex" style="justify-content: center; border: none;text-align: center;">
+                        <h5 class="modal-title" id="exampleModalLongTitle">You Win</h5>
+                    </div>
+                    <div class="card-body">
+
+                     {% if set_prize == 1 %}
+                    <div class="row d-flex" style="justify-content:center;text-align: center;">
+                        <img src="{% static 'img/amazon-voucher.png'%}" style="width: 410px;height: 412px;"> 
+                         <strong class="result" id="result"></strong>
+                    </div>
+                    {% elif set_prize == 2 %}
+                    <div class="row d-flex" style="justify-content:center;text-align: center;">
+                        <img src="{% static 'img/tupperware.png'%}" style="width: 410px;height: 412px;">
+                         <strong class="result" id="result"></strong> 
+                    </div>
+                    {% elif set_prize == 3 %}
+
+                    <div class="row d-flex" style="justify-content:center;text-align: center;">
+                        <img src="{% static 'img/flask.png'%}" style="width: 410px;height: 412px;">
+                         <strong class="result" id="result"></strong> 
+                    </div>
+                    {% else %}
+                    <div class="row d-flex" style="justify-content:center;text-align: center;">
+                        <img src="{% static 'img/umbrella.png'%}" style="width: 410px;height: 412px;"> 
+                         <strong class="result" id="result"></strong>
+                    </div>
+                    {% endif %}                        
+                    </div>
+                </div> -->
+			</div>
+		</div>	
+			
+
+		<script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+		<script type="text/javascript" src="{% static 'js/boot.js' %}"></script>
+    	<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+		<script type="text/javascript">
+
+            
+			var padding = {top:0, right:0, bottom:0, left:0},
+            w = 350 - padding.left - padding.right,
+            h = 350 - padding.top  - padding.bottom,
+            r = Math.min(w, h)/2,
+            rotation = 0,
+            oldrotation = 0,
+            picked = 100000,
+            oldpick = [],
+            color = d3.scale.category20();//category20c()
+            console.log(r, w, h,color)
+            //console.log(color)
+            //randomNumbers = getRandomNumbers();
+        //http://osric.com/bingo-card-generator/?title=HTML+and+CSS+BINGO!&words=padding%2Cfont-family%2Ccolor%2Cfont-weight%2Cfont-size%2Cbackground-color%2Cnesting%2Cbottom%2Csans-serif%2Cperiod%2Cpound+sign%2C%EF%B9%A4body%EF%B9%A5%2C%EF%B9%A4ul%EF%B9%A5%2C%EF%B9%A4h1%EF%B9%A5%2Cmargin%2C%3C++%3E%2C{+}%2C%EF%B9%A4p%EF%B9%A5%2C%EF%B9%A4!DOCTYPE+html%EF%B9%A5%2C%EF%B9%A4head%EF%B9%A5%2Ccolon%2C%EF%B9%A4style%EF%B9%A5%2C.html%2CHTML%2CCSS%2CJavaScript%2Cborder&freespace=true&freespaceValue=Web+Design+Master&freespaceRandom=false&width=5&height=5&number=35#results
+        var data = [
+                    {"label":"Amazon Voucher",  "value":1,  "question":"You won the amazon voucher"}, // padding
+                    {"label":"Tupperware",  "value":2,  "question":"You won tupperware"}, //font-family
+                    {"label":"Flask",  "value":3,  "question":"You won the flask"}, //color
+                    {"label":"Umbrella",  "value":4,  "question":"You won the umbrella"}, //font-weight
+                    
+        ];
+        var svg = d3.select('#chart')
+            .append("svg")
+            .data([data])
+            .attr("width",  w + padding.left + padding.right)
+            .attr("height", h + padding.top + padding.bottom);
+        var container = svg.append("g")
+            .attr("class", "chartholder")
+            //.attr("transform", "translate(" + (w/2 + padding.left) + "," + (h/2 + padding.top) + ")");
+            .attr("transform", "translate(165,165)");
+        var vis = container
+            .append("g");
+            
+        var pie = d3.layout.pie().sort(null).value(function(d){return 1;});
+        // declare an arc generator function
+        var arc = d3.svg.arc().outerRadius(r);
+        // select paths, use arc generator to draw
+        var arcs = vis.selectAll("g.slice")
+            .data(pie)
+            .enter()
+            .append("g")
+            .attr("class", "slice");
+            
+        arcs.append("path")
+            .attr("fill", function(d, i){ return color(i); })
+            .attr("d", function (d) { return arc(d); });
+        // add the text
+        arcs.append("text").attr("fill","#fff").attr("transform", function(d){
+                d.innerRadius = 0;
+                d.outerRadius = r;
+                d.angle = (d.startAngle + d.endAngle)/2;
+                return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")translate(154)";
+            })
+            .attr("text-anchor", "end")
+            .text( function(d, i) {
+                return data[i].label;
+            });
+        //arcs.append("<img src='' />")
+
+        container.on("click", spin);
+        function spin(d){
+            var pitem = $('#pv').val();
+            var itmval = $('#qtyval').val();
+            //alert(pitem, itmval);
+            $.ajax({
+                type:'POST',
+                url:'update_item_qty',
+                data:{'csrfmiddlewaretoken': '{{ csrf_token }}','product_key':pitem,'val':itmval},
+                success:function(resp){
+                    //alert("ddd");
+                    console.log("spining...")
+                }
+
+            })
+            
+            container.on("click", null);
+            //all slices have been seen, all done
+            console.log("OldPick: " + oldpick.length, "Data length: " + data.length);
+            if(oldpick.length == data.length){
+                console.log("done");
+                container.on("click", null);
+                return;
+            }
+            var  ps       = 360/data.length,
+                 pieslice = Math.round(1440/data.length),
+                 rng      = Math.floor((Math.random() * 1440) + 360);
+                
+            rotation = (Math.round(rng / ps) * ps);
+            
+            picked = Math.round(data.length - (rotation % 360)/ps);
+            picked = picked >= data.length ? (picked % data.length) : picked;
+            if(oldpick.indexOf(picked) !== -1){
+                d3.select(this).call(spin);
+                return;
+            } else {
+                oldpick.push(picked);
+            }
+
+            //rotation += 90 - Math.round(ps/2);
+            {% if set_prize == 1 %}
+            rotation = 360*15+0+Math.floor(Math.random() * 70);
+            {% elif set_prize == 2 %}
+            rotation = 360*15+270+Math.floor(Math.random() * 70);
+            {% elif set_prize == 3 %}
+            rotation = 360*15+180+Math.floor(Math.random() * 70);
+            {% else %}
+            rotation = 360*15+90+Math.floor(Math.random() * 70);
+            {% endif %}
+            console.log(rotation)
+            vis.transition()
+                .duration(3000)
+                .attrTween("transform", rotTween)
+                .each("end", function(){
+                    //mark question as seen
+                    /*d3.select(".slice:nth-child(" + (picked + 1) + ") path")
+                        .attr("fill", "#ffffff66");*/
+                    //populate question
+                    /*d3.select("#question")
+                        .text(data[4].question);*/
+                    {% if set_prize == 1 %}
+
+                    prize = data[0]['question'];
+                     $('#winnerresult').modal({backdrop: false});
+                    $('#result').text(prize)
+                    $('#result').addClass('active');
+                    $('#winnerresult').modal('show');
+                     frame();
+
+
+                    {% elif set_prize == 2%}
+                    prize = data[1]['question'];
+                     $('#winnerresult').modal({backdrop: false});
+                    $('#result').text(prize)
+                    $('#result').addClass('active');
+                    $('#winnerresult').modal('show');
+                     frame();
+
+
+                    {% elif set_prize == 3%}
+                    prize = data[2]['question'];
+                     $('#winnerresult').modal({backdrop: false});
+                    $('#result').text(prize)
+                    $('#result').addClass('active');
+                    $('#winnerresult').modal('show');
+                     frame();
+
+                    {% else %}
+
+                    prize = data[3]['question'];
+                    $('#winnerresult').modal({backdrop: false});
+                    $('#result').text(prize)
+                    $('#result').addClass('active');
+                    $('#winnerresult').modal('show');
+                    frame();
+
+                    {% endif %}
+
+                    oldrotation = rotation;
+              
+                    /* Get the result value from object "data" */
+                    //console.log(data[4].value)
+                    //console.log(prize)
+                
+                    /* Comment the below line for restrict spin to sngle time */
+                    container.on("click", spin);
+                });
+        }
+        //make arrow
+        svg.append("g")
+            //.attr("transform", "translate(" + (w + padding.left + padding.right) + "," + ((h/2)+padding.top) + ")")
+            .attr("transform", "translate(335,165)")
+            .append("path")
+            .attr("d", "M-" + (r*.15) + ",0L0," + (r*.08) + "L0,-" + (r*.08) + "Z")
+            .attr("stroke","#f3d680")
+            .attr("stroke-width",4)
+            .style({"fill":"#edc652"});
+        //draw spin circle
+        container.append("circle")
+            .attr("cx", 0)
+            .attr("cy", 0)
+            .attr("r", 30)
+            .attr("stroke", "#f8c669")
+            .attr("stroke-width", 5)
+            .attr("stroke-width", 5)
+            .style({"fill":"#f0bb63","cursor":"pointer"});
+        //spin text
+        container.append("text")
+            .attr("x", 0)
+            .attr("y", 8)
+            .attr("text-anchor", "middle")
+            .attr("fill", "#a05e22")
+            .text("Spin")
+            .style({"font-weight":"bold", "font-size":"20px","color":"#a36828"});
+        
+        
+        function rotTween(to) {
+          var i = d3.interpolate(oldrotation % 360, rotation);
+          return function(t) {
+            return "rotate(" + i(t) + ")";
+          };
+        }
+        
+        
+        function getRandomNumbers(){
+            var array = new Uint16Array(5000);
+            console.log(array)
+            var scale = d3.scale.linear().range([360, 1440]).domain([0, 100000]);
+            if(window.hasOwnProperty("crypto") && typeof window.crypto.getRandomValues === "function"){
+                window.crypto.getRandomValues(array);
+                console.log("works");
+            } else {
+                //no support for crypto, get crappy random numbers
+                for(var i=0; i < 1000; i++){
+                    array[i] = Math.floor(Math.random() * 100000) + 1;
+                    console.log(array[i])
+                    if(array[i] == 1){
+                    	break;
+                    }
+                }
+            }
+            return array;
+        }
+
+        document.getElementsByTagName("path")[0].setAttribute('fill','#a70204');
+        document.getElementsByTagName("path")[1].setAttribute('fill','#f6a413');
+        document.getElementsByTagName("path")[2].setAttribute('fill','#a70204');
+        document.getElementsByTagName("path")[3].setAttribute('fill','#f6a413');
+
+        $('#refreshpage').click(function(){
+            location.reload();
+        }); 
+
+        var colors = ["#dd181c", "#1eaf3c","#fbe376","#7834c7","#0966d4"];
+
+function frame() {
+  confetti({
+    particleCount: 5,
+    angle: 60,
+    spread: 55,
+    origin: { x: 0 },
+    colors: colors,
+  });
+  confetti({
+    particleCount: 5,
+    angle: 120,
+    spread: 55,
+    origin: { x: 1 },
+    colors: colors,
+  });
+  confetti({
+    particleCount: 2,
+    angle: 120,
+    spread: 55,
+    origin: { x: 1 },
+    colors: colors,
+  });
+
+  if (Date.now() < Date.now() + 15000) {
+    requestAnimationFrame(frame);
+  }
+}
+
+
+
+
+		</script>
+	</body>
+</html>
